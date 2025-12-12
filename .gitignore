@@ -1,0 +1,18 @@
+# ignorar ficheiros de dados pesados
+Data/*.csv
+Data/*.dat
+
+# ignorar ficheiros temporários de python e do sistema
+__pycache__/
+*.pyc
+venv/
+.DS_Store
+
+# ignorar ficheiros de configuração do editor
+.vscode/
+.idea/
+
+# ignorar ficheiros de backup e binários da Base de Dados
+*.bak
+*.mdf
+*.ldf
