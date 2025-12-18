@@ -112,37 +112,53 @@ class NEOMonitoringApp(ctk.CTk):
 
     def setup_stats_tab(self):
         tab = self.tabview.tab("Estatísticas")
-
         for widget in tab.winfo_children(): widget.destroy()
 
         try:
+            # Obter dados da base de dados
             total_asteroides = db.get_total_asteroids_count()
             data = db.get_alert_counts_fixed()
 
             fig, ax = plt.subplots(figsize=(7, 5), dpi=100)
             fig.patch.set_facecolor('#242424')
 
-            posicoes = [1, 2, 3, 4]
+            # Mapeamento de dados
             niveis_labels = ['1-Baixa', '2-Média', '3-Alta', '4-Crítica']
+            posicoes = [1, 2, 3, 4]
 
-            quantidades = [row[1] for row in data]
-            cores = ['#4dff4d', '#ffff4d', '#ffa64d', '#ff4d4d']
+            # Cores baseadas na tua nova análise: Verde, Amarelo, Laranja, Vermelho
+            cores = ['#2ecc71', '#f1c40f', '#e67e22', '#e74c3c']
 
+            # Extrair quantidades. Se a lista estiver vazia, usamos zeros.
+            quantidades = [0, 0, 0, 0]
+            if data:
+                for row in data:
+                    # row[0] é o nível (1-4), row[1] é a contagem
+                    try:
+                        idx = int(row[0]) - 1
+                        if 0 <= idx < 4:
+                            quantidades[idx] = row[1]
+                    except:
+                        continue
+
+            # Desenhar as barras
             ax.bar(posicoes, quantidades, color=cores, align='center', width=0.6)
 
+            # Configurar limites e legendas para evitar cortes
             ax.set_xlim(0.5, 4.5)
-
             ax.set_xticks(posicoes)
             ax.set_xticklabels(niveis_labels)
 
-            ax.set_ylim(0, total_asteroides)  
+            # CORREÇÃO DA ESCALA: Ajustar para o maior valor de alertas + 10% de margem
+            max_alerts = max(quantidades) if quantidades and max(quantidades) > 0 else 100
+            ax.set_ylim(0, max_alerts * 1.2)
+
             ax.set_ylabel("Quantidade de Alertas", color='white')
-            ax.set_xlabel("Nível de Alerta (1 a 4)", color='white')
-            ax.set_title(f"Alertas vs Total de Inventário ({total_asteroides:,} objetos)", color='white', pad=20)
+            ax.set_title(f"Monitorização de Risco: {sum(quantidades):,} Alertas / {total_asteroides:,} Objetos",
+                         color='white', pad=20, fontsize=12)
 
             ax.set_facecolor('#242424')
             ax.tick_params(colors='white')
-
             plt.tight_layout()
 
             canvas = FigureCanvasTkAgg(fig, master=tab)
@@ -150,7 +166,7 @@ class NEOMonitoringApp(ctk.CTk):
             canvas.get_tk_widget().pack(pady=20, fill="both", expand=True)
 
         except Exception as e:
-            print(f"Erro ao gerar estatística comparativa: {e}")
+            print(f"Erro ao gerar estatística: {e}")
 
     def load_alerts_data(self):
         for i in self.tree.get_children(): self.tree.delete(i)
@@ -165,13 +181,28 @@ class NEOMonitoringApp(ctk.CTk):
     def run_search_logic(self):
         term = self.search_entry.get()
         self.details_box.delete("0.0", "end")
+
         results = db.search_by_id(term) or db.search_by_full_name(term)
+
         if results:
             for res in results:
-                info = f"ID: {res[0]}\nNome: {res[1]}\nDiâmetro: {res[2]} km\n{'-' * 30}\n"
+                # Traduzir a flag PHA para algo legível
+                perigo = "SIM (Potencialmente Perigoso)" if res[3] == 'Y' else "Não"
+
+                info = (
+                    f"DETALHES DO ASTEROIDE\n"
+                    f"{'=' * 30}\n"
+                    f"ID (SPKID): {res[0]}\n"
+                    f"Nome Completo: {res[1]}\n"
+                    f"Diâmetro Estimado: {res[2] if res[2] else 'Desconhecido'} km\n"
+                    f"Potencialmente Perigoso: {perigo}\n"
+                    f"Objeto Próximo (NEO): {'Sim' if res[4] == 'Y' else 'Não'}\n"
+                    f"Magnitude Absoluta (H): {res[5] if res[5] else 'N/A'}\n"
+                    f"{'=' * 30}\n\n"
+                )
                 self.details_box.insert("end", info)
         else:
-            self.details_box.insert("end", "Nenhum resultado encontrado.")
+            self.details_box.insert("end", "Nenhum resultado encontrado para este termo.")
 
     def on_closing(self):
         self.quit()
@@ -181,3 +212,4 @@ class NEOMonitoringApp(ctk.CTk):
 if __name__ == "__main__":
     app = NEOMonitoringApp()
     app.mainloop()
+
