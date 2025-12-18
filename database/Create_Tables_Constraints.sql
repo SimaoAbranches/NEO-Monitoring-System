@@ -1,7 +1,6 @@
 -- CRIAÇÃO DE TABELAS E RESTRIÇÕES
 
-
-USE [NEO_DB]; -- BD criada no Create_DB.sql tem este nome
+USE [NEO_Monitoring_DB];
 GO
 
 -- 1: Tabela de astronomos (Entidade Observacional)
