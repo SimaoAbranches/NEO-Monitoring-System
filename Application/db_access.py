@@ -152,3 +152,18 @@ def get_alert_counts_fixed():
     data = cursor.fetchall()
     conn.close()
     return data
+
+def get_database_stats():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM Asteroid")
+    total_asteroids = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM Alert_Logs")
+    total_alerts = cursor.fetchone()[0]
+
+    conn.close()
+    return total_asteroids, total_alerts
+
