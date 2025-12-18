@@ -85,22 +85,21 @@ def search_by_name(name_term):
     conn.close()
     return results
 
-def search_by_id(spkid_term):
-
+def search_by_id(spkid):
     conn = get_connection()
     cursor = conn.cursor()
-    query = "SELECT spkid, full_name, diameter FROM Asteroid WHERE spkid LIKE ?"
-    cursor.execute(query, (f'%{spkid_term}%',))
+    # Adicionamos pha_flag, neo_flag e h_mag (magnitude)
+    query = "SELECT spkid, full_name, diameter, pha_flag, neo_flag, h_mag FROM Asteroid WHERE spkid = ?"
+    cursor.execute(query, (spkid,))
     results = cursor.fetchall()
     conn.close()
     return results
 
-def search_by_full_name(name_term):
-
+def search_by_full_name(name):
     conn = get_connection()
     cursor = conn.cursor()
-    query = "SELECT spkid, full_name, diameter FROM Asteroid WHERE full_name LIKE ?"
-    cursor.execute(query, (f'%{name_term}%',))
+    query = "SELECT spkid, full_name, diameter, pha_flag, neo_flag, h_mag FROM Asteroid WHERE full_name LIKE ?"
+    cursor.execute(query, (f"%{name}%",))
     results = cursor.fetchall()
     conn.close()
     return results
@@ -153,6 +152,7 @@ def get_alert_counts_fixed():
     conn.close()
     return data
 
+
 def get_database_stats():
 
     conn = get_connection()
@@ -166,4 +166,3 @@ def get_database_stats():
 
     conn.close()
     return total_asteroids, total_alerts
-
