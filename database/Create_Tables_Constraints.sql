@@ -3,7 +3,7 @@
 USE [NEO_Monitoring_DB];
 GO
 
--- 1: Tabela de astronomos (Entidade Observacional)
+-- Tabela de astronomos (Entidade Observacional)
 -- Permite saber quem fez a observação 
 CREATE TABLE Astronomer (
     astronomery_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -12,7 +12,7 @@ CREATE TABLE Astronomer (
 );
 GO
 
--- 2: Tabela de centros de observação (Observatories)
+-- Tabela de centros de observação (Observatories)
 -- Localização e identificação dos centros 
 CREATE TABLE Observatory (
     observatory_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -24,7 +24,7 @@ CREATE TABLE Observatory (
 );
 GO
 
--- 3: Tabela de equipamento
+-- Tabela de equipamento
 -- Telescópios ou sensores usados 
 CREATE TABLE Equipment (
     equipment_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -35,7 +35,7 @@ CREATE TABLE Equipment (
 );
 GO
 
--- 4: Tabela de Software
+-- Tabela de Software
 -- Software utilizado para calcular a órbita ou processar imagem 
 CREATE TABLE Software (
     software_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -45,7 +45,7 @@ CREATE TABLE Software (
 );
 GO
 
--- 5: Tabela de asteroides (Entidade Central)
+-- Tabela de asteroides (Entidade Central)
 -- Contém os dados "estáticos" ou identificadores principais 
 -- Dados físicos (diâmetro, H, albedo) 
 CREATE TABLE Asteroid (
@@ -73,7 +73,7 @@ CREATE TABLE Asteroid (
 );
 GO
 
--- 6: Tabela de dados orbitais (Natureza Temporal)
+-- Tabela de dados orbitais (Natureza Temporal)
 -- Um asteroide pode ter várias órbitas calculadas em épocas diferentes 
 CREATE TABLE OrbitalData (
     orbit_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -117,7 +117,7 @@ CREATE TABLE OrbitalData (
 );
 GO
 
--- 7: Tabela de Observações
+-- Tabela de Observações
 -- Regista o ato de observar, ligando astrónomo, equipamento e asteroide
 CREATE TABLE Observation (
     observation_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -129,7 +129,7 @@ CREATE TABLE Observation (
     
     observation_date DATETIME NOT NULL,
     duration_minutes INT,
-    observation_mode VARCHAR(20), -- Ex: CCD, Visual
+    observation_mode VARCHAR(20), 
     
     -- Ligações (Chaves Estrangeiras)
     CONSTRAINT FK_Obs_Asteroid FOREIGN KEY (asteroid_id) REFERENCES Asteroid(asteroid_id),
@@ -140,7 +140,7 @@ CREATE TABLE Observation (
 );
 GO
 
--- 8: Tabela de Alertas
+-- Tabela de Alertas
 -- Armazena os alertas gerados automaticamente pelos Triggers
 CREATE TABLE Alert (
     alert_id INT IDENTITY(1,1) PRIMARY KEY,
