@@ -20,7 +20,7 @@ class NEOMonitoringApp(ctk.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # --- SIDEBAR ---
+        # Barra lateral
         self.sidebar = ctk.CTkFrame(self, width=200, corner_radius=0)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
 
@@ -38,7 +38,7 @@ class NEOMonitoringApp(ctk.CTk):
         except Exception as e:
             print(f"Erro ao carregar imagem: {e}")
 
-        # --- PAINEL DE ESTATÍSTICAS NA SIDEBAR (O QUE PEDISTE) ---
+        # Painel na parte lateral
         self.stats_frame = ctk.CTkFrame(self.sidebar, corner_radius=10, fg_color="transparent")
         self.stats_frame.pack(side="bottom", fill="x", padx=10, pady=20)
 
@@ -66,7 +66,7 @@ class NEOMonitoringApp(ctk.CTk):
         )
         self.label_alerts.pack(pady=2)
 
-        # --- TABVIEW PRINCIPAL ---
+        # Tabview principal
         self.tabview = ctk.CTkTabview(self)
         self.tabview.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
         self.tabview.add("Monitorização")
@@ -133,7 +133,6 @@ class NEOMonitoringApp(ctk.CTk):
             quantidades = [0, 0, 0, 0]
             if data:
                 for row in data:
-                    # row[0] é o nível (1-4), row[1] é a contagem
                     try:
                         idx = int(row[0]) - 1
                         if 0 <= idx < 4:
@@ -212,4 +211,5 @@ class NEOMonitoringApp(ctk.CTk):
 if __name__ == "__main__":
     app = NEOMonitoringApp()
     app.mainloop()
+
 
