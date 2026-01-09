@@ -1,7 +1,7 @@
 USE [NEO_Monitoring_DB];
 GO
 
--- Criar um Login para a Aplicação Python (Nível de Servidor)
+-- Criar um Login para a Aplicação Python 
 IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = 'NEO_App_User')
 BEGIN
     CREATE LOGIN NEO_App_User WITH PASSWORD = 'AppPassword123';
@@ -15,11 +15,11 @@ BEGIN
 END
 GO
 
--- Definir Permissões (DCL - Data Control Language)
+-- Definir Permissões 
 GRANT SELECT ON SCHEMA::dbo TO NEO_App_User;
 GRANT EXECUTE ON SCHEMA::dbo TO NEO_App_User;
 
--- Impedir explicitamente que o utilizador da App apague tabelas (Segurança extra)
+-- Impedir que o utilizador da App apague tabelas 
 DENY ALTER ON SCHEMA::dbo TO NEO_App_User;
 GO
 
